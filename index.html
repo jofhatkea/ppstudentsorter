@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    #app {
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-gap: 1em;
+    }
+    #app section {
+      border: 1px solid #808080;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <template id="groupTemplate">
+     <section>
+      <h1>Group #<span></span></h1>
+      <h2 class="member1"></h2>
+      <h2 class="member2"></h2>
+      <h2 class="member3"></h2>
+    </section>
+  </template>
+  <script src="FetchGoogleJSON.js"></script>
+  <script src="PrettifyGoogleJSON.js"></script>
+  <script>
+  window.addEventListener('load', function(){
+    //https://docs.google.com/spreadsheets/d/16TvFOPiYGZg3_NdLYkJjwRLddqP2GYRC6uCjn45ve1U/edit?usp=sharing
+    let a = new FetchGoogleJSON('1-RydjembKrMfVZYHxU91AbHTyMPtU9mjbZj-yoQx7H8',function(data){
+      if(data[0].yourname=="Jonas"){
+        data.shift();
+      }
+      let numStudents = data.length;
+      console.log(numStudents);
+      let even = numStudents % 2 ===0;
+      console.log(even)
+      let counter=0;
+      let template = document.querySelector("template").content;
+      let app = document.querySelector("#app");
+      for(let i=0; i<numStudents-1; i+=2){
+        counter++;
+        let group = [
+          data[i].yourname,
+          data[i+1].yourname
+        ];
+        console.log(group)
+        let copy = template.cloneNode(true);
+        copy.querySelector('h1 span').textContent=counter;
+        console.log(copy)
+        copy.querySelector(".member1").textContent=group[0];
+        copy.querySelector(".member2").textContent=group[1];
+        
+        
+        if(!even && i+2==numStudents-1){
+          console.log(data[i+2])  
+          let h2 = document.createElement("h2");
+          h2.textContent=data[i+2].yourname;
+          copy.querySelector('section').appendChild(h2);
+        }
+        app.appendChild(copy);
+        
+      }
+    });
+  });
+    
+    
+    //https://docs.google.com/spreadsheets/d/16TvFOPiYGZg3_NdLYkJjwRLddqP2GYRC6uCjn45ve1U/edit?usp=sharing
+
+
+  </script>
+</body>
+</html>
